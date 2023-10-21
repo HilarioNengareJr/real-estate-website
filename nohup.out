@@ -1,0 +1,4 @@
+/home/hilario/Desktop/BACKEND/real-estate-site/app/utilities.py:59: ElasticsearchWarning: Elasticsearch built-in security features are not enabled. Without authentication, your cluster could be accessible to anyone. See https://www.elastic.co/guide/en/elasticsearch/reference/7.17/security-minimal-setup.html to enable security.
+  if not elastic.indices.exists(index='estate_data'):
+/home/hilario/Desktop/BACKEND/real-estate-site/app/utilities.py:82: ElasticsearchWarning: Elasticsearch built-in security features are not enabled. Without authentication, your cluster could be accessible to anyone. See https://www.elastic.co/guide/en/elasticsearch/reference/7.17/security-minimal-setup.html to enable security.
+  elastic.index(index='estate_data', body=item)

@@ -1,0 +1,41 @@
+attrs==23.1.0
+bcrypt @ file:///work/ci_py311/bcrypt_1676825144644/work
+beautifulsoup4==4.12.2
+blinker==1.6.2
+certifi==2023.7.22
+cffi @ file:///work/ci_py311/cffi_1676822533496/work
+click==8.1.7
+cryptography @ file:///croot/cryptography_1694444244250/work
+dnspython @ file:///work/ci_py311/dnspython_1676903904311/work
+elastic-transport==8.4.1
+elasticsearch==8.10.0
+email-validator @ file:///work/ci_py311/email-validator-meta_1676827106783/work
+Flask==2.3.3
+Flask-Bcrypt @ file:///work/ci_py311/flask-bcrypt_1676852392054/work
+Flask-Dropzone==1.6.0
+Flask-Login @ file:///work/ci_py311/flask-login_1676827770760/work
+Flask-Mail==0.9.1
+Flask-SQLAlchemy==3.1.1
+Flask-WTF==1.2.1
+greenlet==2.0.2
+h11==0.14.0
+idna @ file:///work/ci_py311/idna_1676822698822/work
+itsdangerous==2.1.2
+Jinja2 @ file:///work/ci_py311/jinja2_1676823587943/work
+MarkupSafe==2.1.3
+outcome==1.2.0
+pycparser @ file:///tmp/build/80754af9/pycparser_1636541352034/work
+PySocks==1.7.1
+selenium==4.13.0
+six @ file:///tmp/build/80754af9/six_1644875935023/work
+sniffio==1.3.0
+sortedcontainers==2.4.0
+soupsieve==2.5
+SQLAlchemy==2.0.21
+trio==0.22.2
+trio-websocket==0.11.1
+typing_extensions==4.8.0
+urllib3==1.26.17
+Werkzeug==2.3.7
+wsproto==1.2.0
+WTForms @ file:///Users/ktietz/demo/mc3/conda-bld/wtforms_1629354749392/work
