@@ -76,10 +76,6 @@
     box-sizing: border-box;
 }
 
-.property-card {
-    min-height: 750px !important;
-}
-
 .h-100 {
     height: 100vh;
 }
@@ -734,10 +730,6 @@ textarea:is(:hover, :focus) {
     background-color: var(--white);
 }
 
-.property-card-height {
-    height: 850px !important;
-}
-
 .featured-card {
     min-height: 750px;
 }
@@ -1342,10 +1334,15 @@ textarea:is(:hover, :focus) {
 
 .grid-list {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 50px 45px
 }
 
+.grid-list-custom{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 50px 45px
+}
 /*-----------------------------------*\
     #MEDIA QUERIES
   \*-----------------------------------*/

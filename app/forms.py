@@ -20,7 +20,7 @@ class RegistrationForm(FlaskForm):
         validate_username(self, username): Validate username.
         validate_email(self, email): Validate email.
     """
-    username = StringField('First Name', validators=[DataRequired(), Length(min=2, max=100)])
+    username = StringField('User Name', validators=[DataRequired(), Length(min=2, max=100)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Sign Up')
