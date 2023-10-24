@@ -120,7 +120,7 @@ def register() -> str:
 
 
 @app.route("/login", methods=['GET', 'POST'])
-def login() -> str:
+def login():
     '''Login an existing user'''
     if current_user.is_authenticated:
         return redirect(url_for('properties'))
@@ -141,7 +141,7 @@ def login() -> str:
 
 @app.route('/add-listing', methods=['POST', 'GET'])
 @login_required
-def add_listing() -> str:
+def add_listing():
     '''Add a new property listing'''
     form = PostForm()
 
