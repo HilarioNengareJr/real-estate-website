@@ -5,14 +5,17 @@ from app import elastic
 from flask import request
 
 file_path = os.path.join('app', 'webspider', 'estate_data.json')
+blog_path = os.path.join('app', 'webspider', 'blog_data.json')
 
-
-def load_estate_data() -> dict:
-    '''Load estate data from a JSON file'''
+def load_estate_data():
     with open(file_path, 'r') as file:
         data = json.load(file)
     return data
 
+def load_blog_data():
+    with open(blog_path, 'r') as file:
+        data = json.load(file)
+    return data 
 
 def featuring_data(*args: list) -> list:
     '''Randomly select data from given arguments'''

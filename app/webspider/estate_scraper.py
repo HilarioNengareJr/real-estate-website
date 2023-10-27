@@ -86,8 +86,6 @@ def estate_scraper(url: str) -> List[Dict[str, Union[str, None]]]:
                     image_urls_list.append(image_tag['src'])
                     
                 retrieved_data['Images'] = image_urls_list
-                    
-
                 
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -98,7 +96,7 @@ def write_data_to_file(filename: str, data: Dict) -> None:
     with open(filename, 'w') as file:
         json.dump(data, file)
 
-def background_task() -> None:
+def background_task():
     while True:
         with ThreadPoolExecutor() as executor:
             rent_data = executor.submit(estate_scraper, 'https://www.101evler.com/north-cyprus/houses-to-rent').result()
@@ -124,5 +122,4 @@ def background_task() -> None:
         write_data_to_file('./estate_data.json', all_data)
 
         time.sleep(1800)
-
 

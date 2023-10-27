@@ -7,7 +7,7 @@ from app.forms import PostForm, RegistrationForm, LoginForm
 from werkzeug.utils import secure_filename
 from app.models import Post, User
 from app import app, db, bcrypt, mail
-from app.utilities import load_estate_data, featuring_data, perform_search, perform_filtering, get_form_data
+from app.utilities import load_estate_data, load_blog_data, featuring_data, perform_search, perform_filtering, get_form_data
 
 exclusion_strings = ['101evler-cache/user_profile_crop/agent-profile/crop/', 'https://www.101evler.com/v4/images/abstract-user-1.svg', '/101evler-cache/user-logo-svg/', 'www.101evler.com/v4/images/cancel_1.svg']
  
@@ -382,10 +382,10 @@ def account() -> str:
 
 @app.route('/blog')
 def blog() -> str:
-    '''Render the blog page'''
-    return render_template('blog.html')
+    blogs = load_blog_data()
+    return render_template('blog.html', blogs=blogs)
 
-# Logout route
+
 
 
 @app.route('/logout', methods=['GET', 'POST'])
