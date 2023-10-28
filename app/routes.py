@@ -382,7 +382,14 @@ def account() -> str:
 
 @app.route('/blog')
 def blog() -> str:
-    blogs = load_blog_data()
+    blogs_ = load_blog_data()
+    
+    blogs = list()
+    
+    for blog in blogs_:
+        if blog['Image Cover']:
+            blogs.append(blog)
+            
     return render_template('blog.html', blogs=blogs)
 
 
