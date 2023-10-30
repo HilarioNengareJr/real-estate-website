@@ -25,7 +25,7 @@
         z-index: -1;
     }
 
-    .modal-div{
+    .modal-div {
         display: none;
         position: fixed;
         z-index: 1005;
@@ -72,7 +72,7 @@
         border: none;
     }
 
-   
+
 
     .form-control-label {
         width: 100%;
@@ -154,20 +154,20 @@
     }
 
     .find {
-        margin-inline:auto;
-        margin-block-start:  35px;
+        margin-inline: auto;
+        margin-block-start: 35px;
     }
 </style>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Faster+One&display=swap');
 
-    #typed{
+    #typed {
         font-family: 'Faster One', cursive;
     }
-  </style>
+</style>
 <article>
     <section class="hero" id="home">
-        <form action="{{ url_for('search') }}"  method="post">
+        <form action="{{ url_for('search') }}" method="post">
             <div class="typed-div">
                 <h1 class="h1 section-title">
                     <span id="typed"></span>
@@ -175,7 +175,8 @@
             </div>
 
             <div class="search-bar-div">
-                <input type="text" name="query" id="search-select" class="form-group" placeholder="Search Address, City, Price...">
+                <input type="text" name="query" id="search-select" class="form-group"
+                    placeholder="Search Address, City, Price...">
                 <span class="search-icon">
                     <ion-icon name="search-outline"></ion-icon>
                 </span>
@@ -485,6 +486,74 @@
         </div>
     </section>
 
+    <section class="blog" id="blog">
+        <div class="container">
+
+            <p class="section-subtitle">News & Blogs</p>
+
+            <h2 class="h2 section-title">Latest News Feeds</h2>
+
+            <ul class="blog-list has-scrollbar">
+
+                {% for blog in blogs %}
+                <li>
+                    <div class="blog-card" style="height: 550px;background: white;">
+
+                        <figure class="card-banner">
+                            <img src="{{ blog['Image Cover'] }}" alt="The Most Inspiring Interior Design Of 2021"
+                                class="w-100">
+                        </figure>
+
+                        <div class="blog-content">
+
+                            <div class="blog-content-top">
+
+                                <ul class="card-meta-list">
+
+                                    <li>
+                                        <a href="#" class="card-meta-link">
+                                            <ion-icon name="person"></ion-icon>
+
+                                            <span>by: {{ blog['Author'] }}</span>
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="#" class="card-meta-link">
+                                            <ion-icon name="pricetags"></ion-icon>
+
+                                            <span>Estate</span>
+                                        </a>
+                                    </li>
+
+                                </ul>
+
+                                <h3 class="h3 blog-title">
+                                    <a href="#">{{ blog['Title'] }}</a>
+                                </h3>
+
+                            </div>
+
+                            <div class="blog-content-bottom">
+                                <div class="publish-date">
+                                    <ion-icon name="calendar"></ion-icon>
+
+                                    <time datetime="{{ blog['Date'] }}">{{ blog['Date'] }}</time>
+                                </div>
+
+                                <a href="{{ blog['Link'] }}" class="navbar-link">Read More</a>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </li>
+                {% endfor %}
+
+            </ul>
+
+        </div>
+    </section>
 
 
     <section class="cta">

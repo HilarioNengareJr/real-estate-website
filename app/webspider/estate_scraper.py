@@ -2,96 +2,128 @@ import os
 import time
 import json
 from bs4 import BeautifulSoup
-from selenium import webdriver
 from concurrent.futures import ThreadPoolExecutor
-from typing import List, Dict, Union
+from typing import Dict
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium_stealth import stealth
+import undetected_chromedriver as uc
 
-def estate_scraper(url: str) -> List[Dict[str, Union[str, None]]]:
-    file_path = os.path.join('app', 'webspider', 'estate_data.json')
-    if os.path.exists(file_path):
-        with open(file_path, 'r') as file:
-            return json.load(file)
+def estate_scraper(url):
+    options = uc.ChromeOptions()
+    options.headless = False
+    options.add_argument("start-maximized")
+    options.add_argument("--disable-blink-features=AutomationControlled")
 
-    with webdriver.Chrome() as driver:
-        try:
-            driver.get(url)
-            soup = BeautifulSoup(driver.page_source, "lxml")
+    driver = uc.Chrome(options=options)
 
-            divs = soup.select('div.ilanitembasic')
+    stealth(driver,
+        languages=["en-US", "en"],
+        vendor="Google Inc.",
+        platform="Win32",
+        webgl_vendor="Intel Inc.",
+        renderer="Intel Iris OpenGL Engine",
+        fix_hairline=True
+    )
 
-            collective_data = []
+    collective_data = []
 
-            for div in divs:
-                retrieved_data = {}
-                image_urls_list = [] 
+    try:
+        driver.get(url)
+        soup = BeautifulSoup(driver.page_source, "lxml")
 
-                cover_image = div.select_one('img.coverimagefulwidthheight')
-                retrieved_data['Cover Image'] = cover_image.get('src') if cover_image else None
+        divs = soup.select('div.list-item')
 
-                local_currency_element = div.select_one('div.basicpriceconv')
-                retrieved_data['Price'] = local_currency_element.text if local_currency_element else None
+        for div in divs:
+            retrieved_data = {}
 
-                agent_name_element = div.select_one('div.div-block-334')
-                retrieved_data['Agent Name'] = agent_name_element.text if agent_name_element else None
+            agent_name_element = div.find("div", class_="broker-name")
+            if agent_name_element:
+                agent_name = agent_name_element.find("p").text
+                retrieved_data['Agent Name'] = agent_name 
+            else:
+                retrieved_data['Agent Name'] = None
 
-                agent_image_element = div.select_one('img.image-46')
-                retrieved_data['Agent Image Source'] = agent_image_element.get('src', "/static/profile_pics/default.jpg") if agent_image_element else "/static/profile_pics/default.jpg"
+            price_element = div.find("p", class_="price")
+            if price_element:
+                price = price_element.text.strip()
+                retrieved_data['Price'] = price
+            else:
+                retrieved_data['Price'] = None
 
-                description_element = div.select_one('h4.text-block-129')
-                retrieved_data['Description'] = description_element.text if description_element else None
+            link_element = div.find("a", class_="stretched-link")
+            if link_element:
+                listing_title = link_element.text.strip()
+                retrieved_data['Listing Title'] = listing_title
+                location = link_element.find("span").text.strip()
+                retrieved_data['Location'] = location
+            else:
+                retrieved_data['Listing Title'] = None
+                retrieved_data['Location'] = None
 
-                a_tag = div.find('a', class_='hover-black')
-                link_ = 'https://www.101evler.com/' + a_tag['href'] + '#st'
-                driver.get(link_)
+            phone_number_element = div.find("a", class_="btn-call")
+            if phone_number_element:
+                phone_number = phone_number_element["data-phone"]
+                retrieved_data['Phone Number'] = phone_number
+            else:
+                retrieved_data['Phone Number'] = None
+
+            stretched_link_element = div.find("a", class_="stretched-link")
+            if stretched_link_element:
+                stretched_link = stretched_link_element["href"] 
+                print(f"Stretched Link: {stretched_link}")
+
+                driver.get("https://www.hangiev.com" + stretched_link)
                 link_soup = BeautifulSoup(driver.page_source, "lxml")
-                property_details_div = link_soup.find('div', id='konut-detaylari')
-                property_details = property_details_div.find_all('div', class_='text-block-141')
-                for detail in property_details:
-                    label = detail.find('div', class_='col-5').text.strip()
-                    value = detail.find('div', class_='col-7').strong.text.strip()
-                    retrieved_data[label] = value
 
-                quick_overview_div = link_soup.find('div', id='hizli-bakis')
-                quick_overview = quick_overview_div.find_all('div', class_='text-block-141')
-                for detail in quick_overview:
-                    label = detail.find('div', class_='col-5').text.strip()
-                    value = detail.find('div', class_='col-7').strong.text.strip()
-                    retrieved_data[label] = value
-                    
-                phone_number_div = link_soup.find('div', id='danismankartilan')
-                whatsapp_btn = phone_number_div.find('div', class_='div-block-383-green')
-                if whatsapp_btn:
-                    whatsapp_link = whatsapp_btn.find('a')['href']
-                    retrieved_data['Whatsapp Number'] = whatsapp_link
+                room_details_div = link_soup.find('div', class_='item-rooms-detail')
+                if room_details_div:
+                    room_details = [detail.text.strip() for detail in room_details_div.find_all('div')]
+                    retrieved_data['Room Details'] = room_details
+
+                list_element = link_soup.find('ul', class_='item-table-strong')
+                if list_element:
+                    list_items = list_element.find_all('li')
+                    for item in list_items:
+                        label = item.contents[0].strip()
+                        value = item.find('span').text.strip()
+                        retrieved_data[label] = value
+
+                list_element = link_soup.find('ul', class_='item-table-score')
+                if list_element:
+                    items = list_element.find_all('li')
+                    for item in items:
+                        location = item.find('div').text.strip()
+                        distance = item.find('span').text.strip()
+                        retrieved_data[location] = distance
+
+                agency_info = link_soup.find('div', class_='agency-info')
+                if agency_info:
+                    image_tag = agency_info.find('img', class_='rounded-circle')
+                    if image_tag:
+                        retrieved_data['Agent Image'] = image_tag['src']
+                    else:
+                        retrieved_data['Agent Image'] = None
                 else:
-                    retrieved_data['Whatsapp Number'] = None
+                    retrieved_data['Agent Image'] = None
 
-                    
-                sections = link_soup.find_all(class_='ilandetayaccordion')
-                for section in sections:
-                    feature_name = section.find(class_='text-block-142').text
-                    checkboxes = section.find_all(class_='div-block-365')
-                    checkbox_labels = [checkbox.find(class_='checktext').text for checkbox in checkboxes]
-                    retrieved_data[feature_name] = checkbox_labels
-                    
-                collective_data.append(retrieved_data)
-                
-                component = driver.find_element(By.CLASS_NAME, 'tumfotothumb')
+                component = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'p[data-toggle="modal"][data-target="#itemTabs"][data-tab="tabs-photo"]')))
                 component.click()
                 time.sleep(2)
-                div_blocks = link_soup.find_all(class_='div-block-482')
+                image_urls_list = []
+                div_blocks = link_soup.find_all(class_='photo-cont')
                 for div in div_blocks:
-                    image_tag = div.find('img')
-                    image_urls_list.append(image_tag['src'])
-                    
-                retrieved_data['Images'] = image_urls_list
-                    
+                    image_tag = div.find('img')['src'] 
+                    image_urls_list.append(image_tag)
+                retrieved_data['Images'] = image_urls_list 
 
-                
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            
+                collective_data.append(retrieved_data)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        driver.quit()
+        
     return collective_data
 
 def write_data_to_file(filename: str, data: Dict) -> None:
@@ -101,15 +133,19 @@ def write_data_to_file(filename: str, data: Dict) -> None:
 def background_task() -> None:
     while True:
         with ThreadPoolExecutor() as executor:
-            rent_data = executor.submit(estate_scraper, 'https://www.101evler.com/north-cyprus/houses-to-rent').result()
-            cyprus_data = executor.submit(estate_scraper, 'https://www.101evler.com/north-cyprus/houses-for-sale').result()
-            iskele_data = executor.submit(estate_scraper, 'https://www.101evler.com/north-cyprus/houses-for-sale/iskele').result()
-            magusa_data = executor.submit(estate_scraper, 'https://www.101evler.com/north-cyprus/houses-to-rent/famagusta').result()
-            konut_data = executor.submit(estate_scraper, 'https://www.101evler.com/north-cyprus/houses-for-sale').result()
-            featured_data = executor.submit(estate_scraper, 'https://www.101evler.com/north-cyprus/property-to-rent?s-r=R&property_type=1&property_subtype%5B0%5D=2&min_price=&max_price=&currency=1&min_m2=&max_m2=&search_keyword=&publish_date=').result()
-            lefke_data = executor.submit(estate_scraper, 'https://www.101evler.com/north-cyprus/property-to-rent/lefke').result()
-            guzelyurt_data = executor.submit(estate_scraper, 'https://www.101evler.com/north-cyprus/property-to-rent/guzelyurt').result()
-
+            rent_data = executor.submit(estate_scraper, 'https://www.hangiev.com/north-cyprus-properties-for-rent').result()
+            cyprus_data = executor.submit(estate_scraper, 'https://www.hangiev.com/north-cyprus-properties-for-sale').result()
+            iskele_data = executor.submit(estate_scraper, 'https://www.hangiev.com/kyrenia-properties-for-rent').result()
+            magusa_data = executor.submit(estate_scraper, 'https://www.hangiev.com/famagusta-properties-for-rent').result()
+            konut_data = executor.submit(estate_scraper, 'https://www.hangiev.com/famagusta-properties-for-sale').result()
+            featured_data = executor.submit(estate_scraper, 'https://www.hangiev.com/iskele-properties-for-rent').result()
+            lefke_data = executor.submit(estate_scraper, 'https://www.hangiev.com/nicosia-properties-for-sale').result()
+            guzelyurt_data = executor.submit(estate_scraper, 'https://www.hangiev.com/nicosia-properties-for-rent').result()
+            sale_data_1 = executor.submit(estate_scraper, 'https://www.hangiev.com/kyrenia-properties-for-sale').result()
+            sale_data_2 = executor.submit(estate_scraper, 'https://www.hangiev.com/iskele-properties-for-sale').result()
+            sale_data_3 = executor.submit(estate_scraper, 'https://www.hangiev.com/lefke-properties-for-rent').result()
+            sale_data_4 = executor.submit(estate_scraper, 'https://www.hangiev.com/lefke-properties-for-sale').result()
+        
         all_data = {
             'featured_data': featured_data,
             'lefke_data': lefke_data,
@@ -118,11 +154,16 @@ def background_task() -> None:
             'cyprus_data': cyprus_data,
             'iskele_data': iskele_data,
             'magusa_data': magusa_data,
-            'konut_data': konut_data
+            'konut_data': konut_data,
+            'sale_data_1': sale_data_1,
+            'sale_data_2': sale_data_2,
+            'sale_data_3': sale_data_3,
+            'sale_data_4': sale_data_4
         }
+        
+        print(all_data)
 
         write_data_to_file('./estate_data.json', all_data)
 
         time.sleep(1800)
-
 

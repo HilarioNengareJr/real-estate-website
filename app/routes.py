@@ -76,8 +76,15 @@ def search():
 # Home page route
 @app.route('/')
 def home_page() -> str:
-    '''Render the landing page'''
-    return render_template('landing_page.html')
+    blogs_ = load_blog_data()
+    
+    blogs = list()
+    
+    for blog in blogs_:
+        if blog['Image Cover']:
+            blogs.append(blog)
+            
+    return render_template('landing_page.html', blogs=blogs)
 
 # Services section route
 
@@ -378,21 +385,6 @@ def feature_detail(feature_name):
 def account() -> str:
     '''Render the account page'''
     return render_template('account.html')
-
-
-@app.route('/blog')
-def blog() -> str:
-    blogs_ = load_blog_data()
-    
-    blogs = list()
-    
-    for blog in blogs_:
-        if blog['Image Cover']:
-            blogs.append(blog)
-            
-    return render_template('blog.html', blogs=blogs)
-
-
 
 
 @app.route('/logout', methods=['GET', 'POST'])
