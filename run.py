@@ -4,9 +4,9 @@ from app.webspider.blog_scraper import run_background_task
 import threading
 
 if __name__ == '__main__':
+    app.run(debug=True)
     background_task_thread = threading.Thread(target=background_task)
     background_task_thread.start()
     run_background_thread = threading.Thread(target=run_background_task)
     run_background_thread.start()
-    
-    app.run(debug=True)
+   

@@ -9,8 +9,10 @@ from app.models import Post, User
 from app import app, db, bcrypt, mail
 from app.utilities import load_estate_data, load_blog_data, featuring_data, perform_search, perform_filtering, get_form_data
 
-exclusion_strings = ['101evler-cache/user_profile_crop/agent-profile/crop/', 'https://www.101evler.com/v4/images/abstract-user-1.svg', '/101evler-cache/user-logo-svg/', 'www.101evler.com/v4/images/cancel_1.svg']
- 
+exclusion_strings = ['101evler-cache/user_profile_crop/agent-profile/crop/', 'https://www.101evler.com/v4/images/abstract-user-1.svg',
+                     '/101evler-cache/user-logo-svg/', 'www.101evler.com/v4/images/cancel_1.svg']
+
+
 @app.route('/send_email', methods=['POST'])
 def send_email() -> str:
     try:
@@ -54,14 +56,14 @@ def search():
 
             total_hits = len(unique_hits)
             hits = list(unique_hits.values())
-            
+
             temp = []
-   
+
             for item in hits:
                 item['_source']['Images'] = [url for url in item['_source']['Images'] if all(
                     substring not in url for substring in exclusion_strings)]
                 temp.append(item)
-                
+
             hits = temp
 
             total_pages = total_hits // per_page
@@ -77,13 +79,13 @@ def search():
 @app.route('/')
 def home_page() -> str:
     blogs_ = load_blog_data()
-    
+
     blogs = list()
-    
+
     for blog in blogs_:
         if blog['Image Cover']:
             blogs.append(blog)
-            
+
     return render_template('landing_page.html', blogs=blogs)
 
 # Services section route
@@ -226,7 +228,8 @@ def properties():
         estate_data["featured_data"] + posts_data + estate_data["rent_data"] + \
         estate_data["iskele_data"] + \
         estate_data["magusa_data"] + \
-        estate_data["konut_data"] + estate_data["cyprus_data"]
+        estate_data["konut_data"] + estate_data["cyprus_data"] + \
+        estate_data["sale_data_1"] + estate["sale_data_2"]
 
     json_data = [item for item in json_data if item.get(
         'Cover Image') != '/v4/images/no-image.jpg']
@@ -234,11 +237,12 @@ def properties():
         if not item.get('Status'):
             item['Status'] = 'Listed Property'
     temp = []
-   
+
     for item in json_data:
-        item['Images'] = [url for url in item['Images'] if all(substring not in url for substring in exclusion_strings)]
+        item['Images'] = [url for url in item['Images'] if all(
+            substring not in url for substring in exclusion_strings)]
         temp.append(item)
-        
+
     json_data = temp
 
     featured_data = featuring_data(estate_data["lefke_data"],
@@ -272,14 +276,16 @@ def properties():
 @app.route('/to-buy')
 def to_buy():
     page = request.args.get('page', 1, type=int)
-    items_per_page = 10
-    for_sale = load_estate_data()['cyprus_data'] + load_estate_data()['iskele_data']
+    items_per_page = 12
+    for_sale = load_estate_data()['cyprus_data'] + \
+        load_estate_data()['iskele_data']
     temp = []
-   
+
     for item in for_sale:
-        item['Images'] = [url for url in item['Images'] if all(substring not in url for substring in exclusion_strings)]
+        item['Images'] = [url for url in item['Images'] if all(
+            substring not in url for substring in exclusion_strings)]
         temp.append(item)
-        
+
     for_sale = temp
     for_sale = sorted(for_sale, key=lambda x: x.get(
         "Last Updated") or '', reverse=True)
@@ -299,13 +305,14 @@ def to_rent():
         load_estate_data()["featured_data"] + load_estate_data()["rent_data"] + \
         load_estate_data()["magusa_data"] + \
         load_estate_data()["konut_data"]
-        
+
     temp = []
-   
+
     for item in for_rent:
-        item['Images'] = [url for url in item['Images'] if all(substring not in url for substring in exclusion_strings)]
+        item['Images'] = [url for url in item['Images'] if all(
+            substring not in url for substring in exclusion_strings)]
         temp.append(item)
-        
+
     for_rent = temp
 
     for_rent = sorted(for_rent, key=lambda x: x.get(
@@ -326,14 +333,14 @@ def feature_detail(feature_name):
         load_estate_data()["magusa_data"] + \
         load_estate_data()["konut_data"] + load_estate_data()["cyprus_data"]
     temp = []
-   
+
     for item in json_data:
         item['Images'] = [url for url in item['Images'] if all(
             substring not in url for substring in exclusion_strings)]
         temp.append(item)
-        
+
     json_data = temp
-    
+
     if feature_name == 'parking-space':
         feature = 'Otopark'
         filtered_data = [item for item in json_data if feature in item.get(

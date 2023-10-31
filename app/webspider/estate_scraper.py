@@ -1,4 +1,3 @@
-import os
 import time
 import json
 from bs4 import BeautifulSoup
@@ -10,9 +9,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium_stealth import stealth
 import undetected_chromedriver as uc
 
+
 def estate_scraper(url):
     options = uc.ChromeOptions()
-    options.headless = False
+    options.headless = True
     options.add_argument("start-maximized")
     options.add_argument("--disable-blink-features=AutomationControlled")
 
@@ -89,15 +89,29 @@ def estate_scraper(url):
                         label = item.contents[0].strip()
                         value = item.find('span').text.strip()
                         retrieved_data[label] = value
+                        
+                description = link_soup.find_all('div', class_='item-detail-box')[1]
+                text_content = description.get_text()
+                retrieved_data['Description'] = text_content
+                print(text_content)
+
+                date_posted_element = link_soup.find('div', class_='item-stat-box').find('div').find('p').strong.text.strip()
+                retrieved_data['Last Updated'] = date_posted_element
+                print(date_posted_element)
 
                 list_element = link_soup.find('ul', class_='item-table-score')
                 if list_element:
                     items = list_element.find_all('li')
+                    outside_features = []
+                    
                     for item in items:
+                        my_item = {}
                         location = item.find('div').text.strip()
                         distance = item.find('span').text.strip()
-                        retrieved_data[location] = distance
-
+                        my_item[location] = distance
+                        outside_features.append(my_item)
+                    retrieved_data['Outside Features'] = outside_features
+                    
                 agency_info = link_soup.find('div', class_='agency-info')
                 if agency_info:
                     image_tag = agency_info.find('img', class_='rounded-circle')
@@ -112,13 +126,15 @@ def estate_scraper(url):
                 component.click()
                 time.sleep(2)
                 image_urls_list = []
-                div_blocks = link_soup.find_all(class_='photo-cont')
+                div_blocks = link_soup.find_all("div",class_='photo-cont')
                 for div in div_blocks:
-                    image_tag = div.find('img')['src'] 
+                    image_tag = div.find('img', class_="img-fluid")['data-src']
+                    print(image_tag)
                     image_urls_list.append(image_tag)
                 retrieved_data['Images'] = image_urls_list 
 
                 collective_data.append(retrieved_data)
+                
     except Exception as e:
         print(f"An error occurred: {e}")
     finally:
@@ -160,10 +176,7 @@ def background_task() -> None:
             'sale_data_3': sale_data_3,
             'sale_data_4': sale_data_4
         }
-        
-        print(all_data)
 
         write_data_to_file('./estate_data.json', all_data)
 
         time.sleep(1800)
-

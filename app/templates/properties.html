@@ -55,12 +55,11 @@
         <ul class="property-list grid-list">
             {% for post in current_page_data %}
             <li>
-                <div class="property-card property-card-height" id="property-{{ post.id }}">
+                <div class="property-card property-card-height" id="property-{{ post['Listing Number'] }}">
 
                     <figure class="card-banner">
 
-                        <img alt="Failed To Load!!" class="w-100" src="{{ post['Cover Image'] }}">
-
+                        <img alt="Failed To Load!!" class="w-100" src="{{ post['Images'][0]}}">
 
                         <div class="card-badge green">{{ post['Status'] }}</div>
 
@@ -95,7 +94,7 @@
                             <a href="#">{{ post['Property Type'] }}</a>
                         </h3>
 
-                        <p class="card-text">
+                        <p class="card-text" style="height: 90px; overflow-y: hidden; text-overflow: ellipsis !important;">
                             {{ post['Description']}}
                         </p>
 
@@ -137,7 +136,7 @@
                         <div class="card-author">
 
                             <figure class="author-avatar">
-                                <img src="{{ post['Agent Image Source'] }}" alt="{{ post['Agent Name'] }}" class="w-100"
+                                <img src="{{ post['Agent Image'] }}" alt="{{ post['Agent Name'] }}" class="w-100"
                                     style="width: 40px;margin: auto;padding: inherit;">
                             </figure>
 
@@ -153,8 +152,8 @@
 
                         <div class="card-footer-actions">
 
-                            <button id="open-popup-{{post['Ad No']}}" class="card-footer-actions-btn"
-                                data-post-id="{{ post['Ad No'] }}">
+                            <button id="open-popup-{{post['Listing Number']}}" class="card-footer-actions-btn"
+                                data-post-id="{{ post['Listing Number'] }}">
                                 <ion-icon name="resize-outline" role="img" class="md hydrated"
                                     aria-label="resize outline"></ion-icon>
                             </button>
@@ -172,17 +171,17 @@
                         </div>
 
                     </div>
-                    <div id="popup-content-{{ post['Ad No'] }}" class="resize-card" data-post-id="{{ post['Ad No'] }}">
-                        <div id="popup-inner-{{ post['Ad No'] }}" class="card-content for-card-content"
-                            data-post-id="{{ post['Ad No'] }}">
-                            <span class="close" id="close-popup-{{ post['Ad No'] }}" data-post-id="{{ post['Ad No'] }}">
+                    <div id="popup-content-{{ post['Listing Number'] }}" class="resize-card" data-post-id="{{ post['Listing Number'] }}">
+                        <div id="popup-inner-{{ post['Listing Number'] }}" class="card-content for-card-content"
+                            data-post-id="{{ post['Listing Number'] }}">
+                            <span class="close" id="close-popup-{{ post['Listing Number'] }}" data-post-id="{{ post['Listing Number'] }}">
                                 <ion-icon name="close-sharp"></ion-icon>
                             </span>
                             <div class="card-footer">
                                 <div class="card-author">
 
                                     <figure class="author-avatar">
-                                        <img src="{{ post['Agent Image Source'] }}" alt="{{ post['Agent Name'] }}"
+                                        <img src="{{ post['Agent Image'] }}" alt="{{ post['Agent Name'] }}"
                                             class="w-100" style="width: 100%;margin: auto;padding: inherit;">
                                     </figure>
 
@@ -247,7 +246,7 @@
                                             <div class="d-flex card-list">
                                                 <ion-icon name="home-outline"></ion-icon> Rooms
                                                 <span class="result date-list-item">
-                                                    {{ post["Rooms"] }}
+                                                    {{ post["Room Details"] }}
                                                 </span>
                                             </div>
                                         </li>
@@ -309,7 +308,7 @@
                                         <li class="property-list-item card-text d-flex">
                                             <div class="d-flex card-list">
                                                 <ion-icon name="navigate-outline"></ion-icon>Address Number <span
-                                                    class="result date-list-item">{{post["Ad No"]}}</span>
+                                                    class="result date-list-item">{{post["Listing Number"]}}</span>
                                             </div>
                                         </li>
                                         <li class="property-list-item card-text d-flex">
@@ -441,7 +440,7 @@
                     <figure class="card-banner">
 
                         <a href="#">
-                            <img src="{{ detail['Cover Image'] }}" alt="New Apartment Nice View" class="w-100">
+                            <img src="{{ detail['Images'][0] }}" alt="New Apartment Nice View" class="w-100">
                         </a>
 
                         <div class="card-badge green">To Rent</div>
@@ -473,7 +472,7 @@
                             <a href="#">{{ detail['Title'] }}</a>
                         </h3>
 
-                        <p class="card-text">
+                        <p class="card-text" style="height: 90px; overflow-y: hidden; text-overflow: ellipsis;">
                             {{ detail['Description'] }}
                         </p>
 

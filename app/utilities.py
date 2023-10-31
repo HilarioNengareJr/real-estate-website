@@ -7,52 +7,50 @@ from flask import request
 file_path = os.path.join('app', 'webspider', 'estate_data.json')
 blog_path = os.path.join('app', 'webspider', 'blog_data.json')
 
+
 def load_estate_data():
     with open(file_path, 'r') as file:
         data = json.load(file)
     return data
 
+
 def load_blog_data():
     with open(blog_path, 'r') as file:
         data = json.load(file)
-    return data 
+    return data
+
 
 def featuring_data(*args: list) -> list:
     '''Randomly select data from given arguments'''
     selected_data = []
     for arg in args:
-        num_items_from_each = random.randint(1, min(5, len(arg)))
-        selected_data.extend(random.sample(arg, num_items_from_each))
+        if  len(arg) > 0:
+            num_items_from_each = random.randint(1, min(5, len(arg)))
+            selected_data.extend(random.sample(arg, num_items_from_each))
     return selected_data
 
 
 index_mapping = {
     "mappings": {
         "properties": {
-            "Cover Image": {"type": "text"},
-            "Price": {"type": "text"},
             "Agent Name": {"type": "text"},
-            "Agent Image Source": {"type": "text"},
-            "Description": {"type": "text"},
-            "Rooms": {"type": "text"},
-            "Baths Count": {"type": "text"},
-            "Building Age": {"type": "text"},
-            "Gated Community": {"type": "text"},
-            "Floors Count": {"type": "text"},
-            "Floor Number": {"type": "text"},
-            "Furnishes": {"type": "text"},
-            "Ad No": {"type": "text"},
+            "Price": {"type": "text"},
+            "Listing Title": {"type": "text"},
             "Location": {"type": "text"},
+            "Description": {"type": "text"},
+            "Room Details": {"type": "text"},
+            "Usable Internal Area": {"type": "text"},
+            "Building Age": {"type": "text"},
+            "Living Room": {"type": "text"},
+            "Outside Features": {
+                "type": "object",
+                "dynamic": True
+            },
+            "Agent Image": {"type": "text"},
             "Property Type": {"type": "text"},
             "Status": {"type": "text"},
-            "Title Type": {"type": "text"},
-            "Area": {"type": "text"},
-            "Swap": {"type": "text"},
-            "Published On": {"type": "text"},
-            "Last Updated": {"type": "text"},
-            "Min. Rental Period": {"type": "text"},
-            "Pay Interval": {"type": "text"},
-            "Outside Features": {"type": "text"}
+            "Title Deeds": {"type": "text"},
+            "Images": {"type": "text"}
         }
     }
 }
@@ -65,7 +63,7 @@ else:
 
 
 data_set = load_estate_data()['featured_data'] + load_estate_data()['lefke_data'] + load_estate_data()['guzelyurt_data'] + load_estate_data()[
-    'rent_data'] + load_estate_data()['iskele_data'] + load_estate_data()['cyprus_data'] + load_estate_data()['magusa_data'] + load_estate_data()['konut_data']
+    'rent_data'] + load_estate_data()['iskele_data'] + load_estate_data()['cyprus_data'] + load_estate_data()['magusa_data'] + load_estate_data()['konut_data'] + load_estate_data()['sale_data_1'] + load_estate_data()['sale_data_2'] + load_estate_data()['sale_data_3'] + load_estate_data()['sale_data_4']
 
 for item in data_set:
     elastic.index(index='estate_data', body=item)
@@ -78,7 +76,7 @@ def perform_search(query, page, per_page, last_hit=None):
             'query': {
                 'multi_match': {
                     'query': query,
-                    'fields': ['Location', 'Description', 'Property Type', 'Location Features', 'Outside Features', 'Price', 'status']
+                    'fields': ['Location', 'Description', 'Property Type','Title Deeds', 'Outside Features', 'Price', 'status']
                 }
             },
             'sort': ['_id']
