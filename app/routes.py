@@ -227,7 +227,7 @@ def properties():
     json_data = estate_data['featured_data'] + estate_data['lefke_data'] + estate_data['guzelyurt_data'] + estate_data['rent_data'] + estate_data['cyprus_data'] + estate_data['iskele_data'] + \
         estate_data['magusa_data'] + estate_data['konut_data'] + estate_data['sale_data_1'] + \
         estate_data['sale_data_2'] + \
-        estate_data['sale_data_3'] + estate_data['sale_data_4']
+        estate_data['sale_data_3'] + estate_data['sale_data_4'] + posts_data
 
     featured_data = featuring_data(estate_data["lefke_data"],
                                    estate_data["guzelyurt_data"],
@@ -249,20 +249,20 @@ def properties():
 
 @app.route('/to-buy')
 def to_buy():
+    estate_data = load_estate_data()
     page = request.args.get('page', 1, type=int)
+    for_sale = []
     items_per_page = 12
-    for_sale = load_estate_data()['cyprus_data'] + \
-        load_estate_data()['iskele_data']
-    temp = []
+    
+    json_data = estate_data['featured_data'] + estate_data['lefke_data'] + estate_data['guzelyurt_data'] + estate_data['rent_data'] + estate_data['cyprus_data'] + estate_data['iskele_data'] + \
+        estate_data['magusa_data'] + estate_data['konut_data'] + estate_data['sale_data_1'] + \
+        estate_data['sale_data_2'] + \
+        estate_data['sale_data_3'] + estate_data['sale_data_4'] 
 
-    for item in for_sale:
-        item['Images'] = [url for url in item['Images'] if all(
-            substring not in url for substring in exclusion_strings)]
-        temp.append(item)
-
-    for_sale = temp
-    for_sale = sorted(for_sale, key=lambda x: x.get(
-        "Last Updated") or '', reverse=True)
+    for item in json_data:
+        if item['Status'] == "For Sale":
+            for_sale.append(item)
+        
     start_idx = (page - 1) * items_per_page
     end_idx = min(start_idx + items_per_page, len(for_sale))
     current_page_data = for_sale[start_idx:end_idx]
@@ -272,13 +272,18 @@ def to_buy():
 
 @app.route('/to-rent')
 def to_rent():
+    estate_data = load_estate_data()
     page = request.args.get('page', 1, type=int)
     items_per_page = 10
-    for_rent = load_estate_data()["lefke_data"] + load_estate_data()["guzelyurt_data"] + \
-        load_estate_data()["featured_data"] + load_estate_data()["rent_data"] + \
-        load_estate_data()["magusa_data"] + \
-        load_estate_data()["konut_data"]
+    for_rent = []
+    json_data = estate_data['featured_data'] + estate_data['lefke_data'] + estate_data['guzelyurt_data'] + estate_data['rent_data'] + estate_data['cyprus_data'] + estate_data['iskele_data'] + \
+        estate_data['magusa_data'] + estate_data['konut_data'] + estate_data['sale_data_1'] + \
+        estate_data['sale_data_2'] + \
+        estate_data['sale_data_3'] + estate_data['sale_data_4']
 
+    for item in json_data:
+        if item['Status'] == 'To Rent':
+            for_rent.append(item)
 
     start_idx = (page - 1) * items_per_page
     end_idx = min(start_idx + items_per_page, len(for_rent))
@@ -289,19 +294,13 @@ def to_rent():
 
 @app.route('/feature/<feature_name>')
 def feature_detail(feature_name):
-    json_data = load_estate_data()["lefke_data"] + load_estate_data()["guzelyurt_data"] + \
-        load_estate_data()["featured_data"] + load_estate_data()["rent_data"] + \
-        load_estate_data()["iskele_data"] + \
-        load_estate_data()["magusa_data"] + \
-        load_estate_data()["konut_data"] + load_estate_data()["cyprus_data"]
-    temp = []
-
-    for item in json_data:
-        item['Images'] = [url for url in item['Images'] if all(
-            substring not in url for substring in exclusion_strings)]
-        temp.append(item)
-
-    json_data = temp
+    
+    estate_data = load_estate_data()
+    
+    json_data = estate_data['featured_data'] + estate_data['lefke_data'] + estate_data['guzelyurt_data'] + estate_data['rent_data'] + estate_data['cyprus_data'] + estate_data['iskele_data'] + \
+        estate_data['magusa_data'] + estate_data['konut_data'] + estate_data['sale_data_1'] + \
+        estate_data['sale_data_2'] + \
+        estate_data['sale_data_3'] + estate_data['sale_data_4']
 
     if feature_name == 'parking-space':
         feature = 'Otopark'
