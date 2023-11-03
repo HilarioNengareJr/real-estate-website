@@ -209,7 +209,7 @@ def add_listing():
 @app.route('/properties', methods=['POST', 'GET'])
 def properties():
     page = request.args.get('page', 1, type=int)
-    items_per_page = 16
+    items_per_page = 15
 
     estate_data = load_estate_data()
 
@@ -224,26 +224,10 @@ def properties():
                        'Description': post.description, 'Beds': post.bedrooms, 'Baths': post.bathrooms,
                        'Area': post.area, 'Agent Name': post.author.username, 'Date': post.timestamp} for post in posts]
 
-    json_data = estate_data["lefke_data"] + estate_data["guzelyurt_data"] + \
-        estate_data["featured_data"] + posts_data + estate_data["rent_data"] + \
-        estate_data["iskele_data"] + \
-        estate_data["magusa_data"] + \
-        estate_data["konut_data"] + estate_data["cyprus_data"] + \
-        estate_data["sale_data_1"] + estate["sale_data_2"]
-
-    json_data = [item for item in json_data if item.get(
-        'Cover Image') != '/v4/images/no-image.jpg']
-    for item in json_data:
-        if not item.get('Status'):
-            item['Status'] = 'Listed Property'
-    temp = []
-
-    for item in json_data:
-        item['Images'] = [url for url in item['Images'] if all(
-            substring not in url for substring in exclusion_strings)]
-        temp.append(item)
-
-    json_data = temp
+    json_data = estate_data['featured_data'] + estate_data['lefke_data'] + estate_data['guzelyurt_data'] + estate_data['rent_data'] + estate_data['cyprus_data'] + estate_data['iskele_data'] + \
+        estate_data['magusa_data'] + estate_data['konut_data'] + estate_data['sale_data_1'] + \
+        estate_data['sale_data_2'] + \
+        estate_data['sale_data_3'] + estate_data['sale_data_4']
 
     featured_data = featuring_data(estate_data["lefke_data"],
                                    estate_data["guzelyurt_data"],
@@ -254,21 +238,11 @@ def properties():
                                    estate_data["konut_data"],
                                    estate_data["cyprus_data"])
 
-    filtered_data = perform_filtering(json_data,
-                                      city=city,
-                                      status=status,
-                                      min_price=min_price,
-                                      max_price=max_price,
-                                      property_type=property_type)
-
-    filtered_data = sorted(filtered_data, key=lambda x: x.get(
-        "Last Updated") or '', reverse=True)
-
     start_idx = (page - 1) * items_per_page
-    end_idx = min(start_idx + items_per_page, len(filtered_data))
-    current_page_data = filtered_data[start_idx:end_idx]
+    end_idx = min(start_idx + items_per_page, len(json_data))
+    current_page_data = json_data[start_idx:end_idx]
 
-    total_pages = len(filtered_data) // items_per_page
+    total_pages = len(json_data) // items_per_page
 
     return render_template('properties.html', current_page_data=current_page_data, featured_data=featured_data, page=page, total_pages=total_pages)
 
@@ -296,7 +270,6 @@ def to_buy():
     return render_template('to_buy.html', current_page_data=current_page_data, page=page,
                            total_pages=len(for_sale)//items_per_page)
 
-
 @app.route('/to-rent')
 def to_rent():
     page = request.args.get('page', 1, type=int)
@@ -306,17 +279,6 @@ def to_rent():
         load_estate_data()["magusa_data"] + \
         load_estate_data()["konut_data"]
 
-    temp = []
-
-    for item in for_rent:
-        item['Images'] = [url for url in item['Images'] if all(
-            substring not in url for substring in exclusion_strings)]
-        temp.append(item)
-
-    for_rent = temp
-
-    for_rent = sorted(for_rent, key=lambda x: x.get(
-        "Last Updated") or '', reverse=True)
 
     start_idx = (page - 1) * items_per_page
     end_idx = min(start_idx + items_per_page, len(for_rent))

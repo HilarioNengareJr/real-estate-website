@@ -50,16 +50,16 @@
 <section class="property">
     <div class="container">
         <p class=""></p>
+
+
         <ul class="property-list grid-list">
             {% for post in current_page_data %}
             <li>
-                <div class="property-card property-card-height" id="property-{{ post.id }}">
+                <div class="property-card property-card-height" id="property-{{ post['Listing Number'] }}">
 
                     <figure class="card-banner">
 
-
-                        <img alt="Failed To Load!!" class="w-100" src="{{ post['Cover Image'] }}">
-
+                        <img alt="Failed To Load!!" class="w-100" src="{{ post['Images'][0]}}">
 
                         <div class="card-badge {% if post['Status'] == 'To Rent' %}green{% else %}orange{% endif %}">
                             {{ post['Status'] }}
@@ -89,30 +89,30 @@
                     <div class="card-content">
 
                         <div class="card-price">
-                            <strong>{{ post['Price']}}</strong>/Month
+                            <strong>{{ post['Price']}}</strong>
                         </div>
 
                         <h3 class="h3 card-title">
                             <a href="#">{{ post['Property Type'] }}</a>
                         </h3>
 
-                        <p class="card-text">
+                        <p class="card-text" style="height: 90px; overflow-y: hidden; text-overflow: ellipsis !important;">
                             {{ post['Description']}}
                         </p>
 
                         <ul class="card-list">
 
                             <li class="card-item">
-                                <strong>{{ post['Rooms']}}</strong>
+                                <strong>{{ post['Room Details'][0][0]}}</strong>
 
                                 <ion-icon name="bed-outline" role="img" class="md hydrated"
                                     aria-label="bed outline"></ion-icon>
 
-                                <span>Rooms</span>
+                                <span>Bedrooms</span>
                             </li>
 
                             <li class="card-item">
-                                <strong>{{ post['Baths Count'] }}</strong>
+                                <strong>{{ post['Room Details'][1][0] }}</strong>
 
                                 <ion-icon name="man-outline" role="img" class="md hydrated"
                                     aria-label="man outline"></ion-icon>
@@ -121,12 +121,12 @@
                             </li>
 
                             <li class="card-item">
-                                <strong>{{ post['Area'] }}</strong>
+                                <strong>{{ post['Usable Internal Area'][0] }}</strong>
 
                                 <ion-icon name="square-outline" role="img" class="md hydrated"
                                     aria-label="square outline"></ion-icon>
 
-                                <span>Square m</span>
+                                <span>Square meters</span>
                             </li>
 
                         </ul>
@@ -138,7 +138,7 @@
                         <div class="card-author">
 
                             <figure class="author-avatar">
-                                <img src="{{ post['Agent Image Source'] }}" alt="{{ post['Agent Name'] }}" class="w-100"
+                                <img src="{{ post['Agent Image'] }}" alt="{{ post['Agent Name'] }}" class="w-100"
                                     style="width: 40px;margin: auto;padding: inherit;">
                             </figure>
 
@@ -154,8 +154,8 @@
 
                         <div class="card-footer-actions">
 
-                            <button id="open-popup-{{post['Ad No']}}" class="card-footer-actions-btn"
-                                data-post-id="{{ post['Ad No'] }}">
+                            <button id="open-popup-{{post['Listing Number']}}" class="card-footer-actions-btn"
+                                data-post-id="{{ post['Listing Number'] }}">
                                 <ion-icon name="resize-outline" role="img" class="md hydrated"
                                     aria-label="resize outline"></ion-icon>
                             </button>
@@ -173,28 +173,31 @@
                         </div>
 
                     </div>
-                    <div id="popup-content-{{ post['Ad No'] }}" class="resize-card" data-post-id="{{ post['Ad No'] }}">
-                        <div id="popup-inner-{{ post['Ad No'] }}" class="card-content for-card-content"
-                            data-post-id="{{ post['Ad No'] }}">
-                            <span class="close" id="close-popup-{{ post['Ad No'] }}" data-post-id="{{ post['Ad No'] }}">
+                    <div id="popup-content-{{ post['Listing Number'] }}" class="resize-card" data-post-id="{{ post['Listing Number'] }}">
+                        <div id="popup-inner-{{ post['Listing Number'] }}" class="card-content for-card-content"
+                            data-post-id="{{ post['Listing Number'] }}">
+                            <span class="close" id="close-popup-{{ post['Listing Number'] }}" data-post-id="{{ post['Listing Number'] }}">
                                 <ion-icon name="close-sharp"></ion-icon>
                             </span>
-                            <div class="card-author">
+                            <div class="card-footer">
+                                <div class="card-author">
 
-                                <figure class="author-avatar">
-                                    <img src="{{ post['Agent Image Source'] }}" alt="{{ post['Agent Name'] }}"
-                                        class="w-100" style="width: 100%;margin: auto;padding: inherit;">
-                                </figure>
+                                    <figure class="author-avatar">
+                                        <img src="{{ post['Agent Image'] }}" alt="{{ post['Agent Name'] }}"
+                                            class="w-100" style="width: 100%;margin: auto;padding: inherit;">
+                                    </figure>
 
-                                <div>
-                                    <p class="author-name" style="max-width: 250px;">
-                                        <a href="#">{{ post['Agent Name'] }}</a>
-                                    </p>
+                                    <div>
+                                        <p class="author-name" style="max-width: 250px;">
+                                            <a href="#">{{ post['Agent Name'] }}</a>
+                                        </p>
 
-                                    <p class="author-title">Estate Agent</p>
+                                        <p class="author-title">Estate Agent</p>
+                                    </div>
+
                                 </div>
-
                             </div>
+
                             <p class="section-subtitle" style="margin-block:50px;">
                                 Gallery
                             </p>
@@ -243,16 +246,16 @@
                                         </li>
                                         <li class="property-list-item card-text d-flex">
                                             <div class="d-flex card-list">
-                                                <ion-icon name="home-outline"></ion-icon> Rooms
+                                                <ion-icon name="home-outline"></ion-icon> Bedrooms
                                                 <span class="result date-list-item">
-                                                    {{ post["Rooms"] }}
+                                                    {{ post["Room Details"][0][0] }}
                                                 </span>
                                             </div>
                                         </li>
                                         <li class="property-list-item card-text d-flex">
                                             <div class="d-flex card-list">
                                                 <ion-icon name="water-outline"></ion-icon>Baths Count <span
-                                                    class="result date-list-item"> {{ post["Baths Count"] }}</span>
+                                                    class="result date-list-item"> {{ post["Room Details"][0][0] }}</span>
                                             </div>
                                         </li>
                                         <li class="property-list-item card-text d-flex">
@@ -263,33 +266,38 @@
                                         </li>
                                         <li class="property-list-item card-text d-flex">
                                             <div class="d-flex card-list">
-                                                <ion-icon name="people-outline"></ion-icon>Gated Community <span
-                                                    class="result date-list-item">{{ post["Gated Community"] }}</span>
+                                                <ion-icon name="people-outline"></ion-icon>Living Room<span
+                                                    class="result date-list-item">{{ post["Living Room"] }}</span>
                                             </div>
                                         </li>
                                         <li class="property-list-item card-text d-flex">
                                             <div class="d-flex card-list">
-                                                <ion-icon name="information-circle-outline"></ion-icon>Floors Count
-                                                <span class="result date-list-item">{{ post["Floors Count"] }}</span>
+                                                <ion-icon name="information-circle-outline"></ion-icon>Minimum Rental Period
+                                                <span class="result date-list-item">{{ post["Minimum Rental Period"] }}</span>
                                             </div>
                                         </li>
                                         <li class="property-list-item card-text d-flex">
                                             <div class="d-flex card-list">
                                                 <ion-icon name="caret-up-circle-outline"></ion-icon>Floor Number <span
-                                                    class="result date-list-item">{{ post["Floor Number"] }}</span>
+                                                    class="result date-list-item">{{ post["Apartment Floor"] }}</span>
                                             </div>
                                         </li>
                                         <li class="property-list-item card-text d-flex">
                                             <div class="d-flex card-list">
                                                 <ion-icon name="bed-outline"></ion-icon>Furniture <span
-                                                    class="result date-list-item">{{ post["Furnishes"] }}</span>
+                                                    class="result date-list-item">{{ post["Furnishing Type"] }}</span>
                                             </div>
                                         </li>
+                                        
                                         <li class="property-list-item card-text d-flex">
-                                            <div class="d-flex card-list"><ion-icon
-                                                    name="calendar-outline"></ion-icon>Published on
+                                            <div class="d-flex card-list"><ion-icon name="baseball-outline"></ion-icon>Pool
                                                 <span class="date-list-item result">
-                                                    {{ post["Published On"] }}</span>
+                                                    {% if post['pool'] %}
+                                                    {{ post["Pool"] }}
+                                                    {% else %}
+                                                    No Pool
+                                                    {% endif %}
+                                                </span>
                                             </div>
                                         </li>
                                         <li class="property-list-item card-text d-flex">
@@ -297,7 +305,7 @@
                                                 <ion-icon name="calendar-outline"></ion-icon>Last
                                                 Modified
                                                 on
-                                                <span class="date-list-item result"> {{post["Last Updated"]}}</span>
+                                                <span class="date-list-item result"> {{ post["Last Updated"] }}</span>
                                             </div>
                                         </li>
                                     </ul>
@@ -307,7 +315,7 @@
                                         <li class="property-list-item card-text d-flex">
                                             <div class="d-flex card-list">
                                                 <ion-icon name="navigate-outline"></ion-icon>Address Number <span
-                                                    class="result date-list-item">{{post["Ad No"]}}</span>
+                                                    class="result date-list-item">{{post["Listing Number"]}}</span>
                                             </div>
                                         </li>
                                         <li class="property-list-item card-text d-flex">
@@ -330,24 +338,38 @@
                                                     class="result date-list-item">{{ post["Status"] }}</span>
                                             </div>
                                         </li>
+                                        <li class="property-list-item card-text d-flex">
+                                            <div class="d-flex card-list">
+                                            <ion-icon name="airplane-outline"></ion-icon>
+                                               Elevator
+                                                <span class="date-list-item result">
+                                                    {% if post['Elevator'] %}
+                                                    {{ post["Elevator"] }}
+                                                    {% else %}
+                                                    No Elevator
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
                             <p class="section-subtitle" style="margin-block-start: 20px;">
                                 Detailed Features
                             </p>
-                            <div class="features grid-list-3">
+                            <div class="features" style="padding-inline-start: 100px;">
                                 {% if post['Outside Features'] %}
                                 <ul>
                                     <li class="property-list-item card-text" style="display: grid;">
                                         <div class="card-list d-flex">
-                                            <ion-icon name="information-outline"></ion-icon>Outside Features
+                                            <ion-icon name="information-outline"></ion-icon>Location Features
                                         </div>
-                                        <ul style="padding-inline-start: 50px;color: var(--orange-soda);">
-                                            {% for feature in post['Outside Features'] %}
+                                        <ul style="padding-inline-start: 100px;color: var(--orange-soda);">
+                                            {% for elm in post['Outside Features']%}
+                                            {% for key, value in elm.items() %}
                                             <li class="result"
-                                                style="list-style: url('../static/images/list.png') !important;">{{
-                                                feature }}</li>
+                                                style="list-style: url('../static/images/list.png') !important;"><span class="card-list card-item">{{key}}:</span> {{value}}</li>
+                                            {% endfor %}
                                             {% endfor %}
                                         </ul>
                                     </li>
@@ -355,53 +377,19 @@
                                 {% else %}
                                 <p class="card-text">No outside features listed</p>
                                 {% endif %}
-
-                                {% if post['Inside Features'] %}
-                                <ul>
-                                    <li class="property-list-item card-text" style="display: grid;">
-                                        <div class="card-list d-flex">
-                                            <ion-icon name="information-outline"></ion-icon>Inside Features
-                                        </div>
-                                        <ul style="padding-inline-start: 50px;color: var(--orange-soda);">
-                                            {% for feature in post['Inside Features'] %}
-                                            <li class="result"
-                                                style="list-style: url('../static/images/list.png') !important;">{{
-                                                feature }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                    </li>
-                                </ul>
-                                {% else %}
-                                <p class="card-text">No inside features listed</p>
-                                {% endif %}
-
-                                {% if post['LocationFeatures'] %}
-                                <ul>
-                                    <li class="property-list-item card-text" style="display: grid;">
-                                        <div class="card-list d-flex">
-                                            <ion-icon name="information-outline"></ion-icon>Location Features
-                                        </div>
-                                        <ul style="padding-inline-start: 50px;color: var(--orange-soda);">
-                                            {% for feature in post['LocationFeatures'] %}
-                                            <li class="result"
-                                                style="list-style: url('../static/images/list.png') !important;">{{
-                                                feature }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                    </li>
-                                </ul>
-                                {% else %}
-                                <p class="card-text">No location features listed</p>
-                                {% endif %}
                             </div>
-
-
+                            <div class="card-footer-actions" style="padding-block: 20px;">
+                                <a href="tel: {{ post['PhoneNumber'] }}" class="btn">
+                                    Contact Realtor
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </li>
             {% endfor %}
         </ul>
+
     </div>
 </section>
 

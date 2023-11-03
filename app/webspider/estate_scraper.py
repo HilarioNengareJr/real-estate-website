@@ -1,5 +1,6 @@
 import time
 import json
+import random
 from bs4 import BeautifulSoup
 from concurrent.futures import ThreadPoolExecutor
 from typing import Dict
@@ -143,6 +144,9 @@ def estate_scraper(url):
     return collective_data
 
 def write_data_to_file(filename: str, data: Dict) -> None:
+    for key, value in data.items():
+            random.shuffle(value)
+            
     with open(filename, 'w') as file:
         json.dump(data, file)
 
