@@ -50,7 +50,7 @@ def search():
 
             unique_hits = {}
             for hit in hits:
-                ad_no = hit['_source']['Ad No']
+                ad_no = hit['_source']['Listing Number']
                 if ad_no not in unique_hits:
                     unique_hits[ad_no] = hit
 
@@ -74,8 +74,6 @@ def search():
 
     return redirect(url_for('home_page'))
 
-
-# Home page route
 @app.route('/')
 def home_page() -> str:
     blogs_ = load_blog_data()
@@ -302,8 +300,8 @@ def feature_detail(feature_name):
         estate_data['sale_data_2'] + \
         estate_data['sale_data_3'] + estate_data['sale_data_4']
 
-    if feature_name == 'parking-space':
-        feature = 'Otopark'
+    if feature_name == 'Market':
+        feature = 'Market'
         filtered_data = [item for item in json_data if feature in item.get(
             "Outside Features", [])]
         return render_template('features.html', title=feature_name, filtered_data=filtered_data, )
@@ -321,7 +319,7 @@ def feature_detail(feature_name):
         return render_template('features.html', title=feature_name, filtered_data=filtered_data, )
 
     elif feature_name == 'medical-center':
-        feature = 'Hastane'
+        feature = 'Hastanesi'
         filtered_data = [item for item in json_data if feature in item.get(
             "Outside Features", [])]
         return render_template('features.html', title=feature_name, filtered_data=filtered_data, )
