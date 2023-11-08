@@ -301,6 +301,17 @@
                                             </div>
                                         </li>
                                         <li class="property-list-item card-text d-flex">
+                                            <div class="d-flex card-list"><ion-icon name="leaf-outline"></ion-icon>Garden
+                                                <span class="date-list-item result">
+                                                    {% if post['Garden'] %}
+                                                    {{ post["Garden"] }}
+                                                    {% else %}
+                                                    No Garden
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        </li>
+                                        <li class="property-list-item card-text d-flex">
                                             <div class="d-flex card-list">
                                                 <ion-icon name="calendar-outline"></ion-icon>Last
                                                 Modified

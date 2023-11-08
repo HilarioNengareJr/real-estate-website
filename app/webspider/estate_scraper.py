@@ -9,7 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium_stealth import stealth
 import undetected_chromedriver as uc
-
+from webdriver_manager.chrome import ChromeDriverManager
 
 def estate_scraper(url):
     options = uc.ChromeOptions()
@@ -17,7 +17,7 @@ def estate_scraper(url):
     options.add_argument("start-maximized")
     options.add_argument("--disable-blink-features=AutomationControlled")
 
-    driver = uc.Chrome(options=options)
+    driver = uc.Chrome(ChromeDriverManager().install(), options=options)
 
     stealth(driver,
         languages=["en-US", "en"],

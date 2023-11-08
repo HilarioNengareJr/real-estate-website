@@ -96,15 +96,6 @@ def services() -> str:
 
 # About section route
 
-
-@app.route('/#about')
-def about() -> str:
-    '''Render the about section'''
-    return render_template('landing_page.html')
-
-# Registration route
-
-
 @app.route("/register", methods=['GET', 'POST'])
 def register() -> str:
     '''Register a new user'''
@@ -307,9 +298,9 @@ def feature_detail(feature_name):
         return render_template('features.html', title=feature_name, filtered_data=filtered_data, )
 
     elif feature_name == 'swimming-pool':
-        feature = 'Shared Pool'
+        feature = 'Pool'
         filtered_data = [item for item in json_data if feature in item.get(
-            "Outside Features", [])]
+            "Pool", [])]
         return render_template('features.html', title=feature_name, filtered_data=filtered_data, )
 
     elif feature_name == 'private-security':
@@ -324,16 +315,16 @@ def feature_detail(feature_name):
             "Outside Features", [])]
         return render_template('features.html', title=feature_name, filtered_data=filtered_data, )
 
-    elif feature_name == 'City View':
-        feature = 'City View'
+    elif feature_name == 'building-age':
+        feature = 'New Building'
         filtered_data = [item for item in json_data if feature in item.get(
-            "Location Features", [])]
+            "Building Age", [])]
         return render_template('features.html', title=feature_name, filtered_data=filtered_data, )
 
     elif feature_name == 'furnished':
         feature = 'Furnished'
-        filtered_data = [item for item in json_data if item.get(
-            'Furnishes') == 'Furnished']
+        filtered_data = [item for item in json_data if feature in item.get(
+            'Furnishing Type', [])]
         return render_template('features.html', title=feature_name, filtered_data=filtered_data, )
 
     elif feature_name == 'park':
@@ -341,9 +332,20 @@ def feature_detail(feature_name):
         filtered_data = [item for item in json_data if feature in item.get(
             "Outside Features", [])]
         return render_template('features.html', title=feature_name, filtered_data=filtered_data, )
+   
+    elif feature_name == 'with-garden':
+        feature = 'Yes'
+        filtered_data = [item for item in json_data if feature in item.get(
+            "Garden", [])]
+        return render_template('features.html', title=feature_name, filtered_data=filtered_data, )
 
     else:
         return "Invalid feature name"
+
+
+@app.route('/about')
+def about():
+    return render_template("about.html")
 
 
 @app.route('/account')
