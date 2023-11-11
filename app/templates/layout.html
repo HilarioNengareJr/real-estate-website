@@ -135,7 +135,6 @@
 
         <div class="header-bottom">
             <div class="container">
-
                 <a href="{{ url_for('home_page') }}" class="logo">
                     <img src="static/images/logo.png" alt="logo" style="width: 60px;">
                 </a>
@@ -145,9 +144,9 @@
                     <div class="navbar-top">
 
                         <a href="#" class="logo">
-                            <img src="./assets/images/logo.png" alt="logo" style="width: 60px;">
-                            
-                        </a> 
+                            <img src="/static/images/logo.png" alt="logo" style="width: 60px;">
+
+                        </a>
 
                         <button class="nav-close-btn" data-nav-close-btn aria-label="Close Menu">
                             <ion-icon name="close-outline"></ion-icon>
@@ -163,7 +162,8 @@
                             </li>
 
                             <li>
-                                <a href="{{ url_for('properties') }}" class="navbar-link" data-nav-link>All Properties</a>
+                                <a href="{{ url_for('properties') }}" class="navbar-link" data-nav-link>All
+                                    Properties</a>
                             </li>
                             <li>
                                 <a href="{{ url_for('to_rent') }}" class="navbar-link" data-nav-link>Rentals</a>

@@ -291,10 +291,16 @@ def feature_detail(feature_name):
         estate_data['sale_data_2'] + \
         estate_data['sale_data_3'] + estate_data['sale_data_4']
 
-    if feature_name == 'Market':
-        feature = 'Market'
-        filtered_data = [item for item in json_data if feature in item.get(
-            "Outside Features", [])]
+    if feature_name == 'bus-stop':
+        feature = 'Bus Stop'
+        filtered_data = []
+        
+        for property_listing in json_data:
+            for feature_dict in property_listing.get("Outside Features", []):
+                for key, value in feature_dict.items():
+                    if feature in key:
+                        filtered_data.append(property_listing)
+                        
         return render_template('features.html', title=feature_name, filtered_data=filtered_data, )
 
     elif feature_name == 'swimming-pool':
@@ -311,9 +317,15 @@ def feature_detail(feature_name):
 
     elif feature_name == 'medical-center':
         feature = 'Hastanesi'
-        filtered_data = [item for item in json_data if feature in item.get(
-            "Outside Features", [])]
-        return render_template('features.html', title=feature_name, filtered_data=filtered_data, )
+        filtered_data = []
+        
+        for property_listing in json_data:
+            for feature_dict in property_listing.get("Outside Features", []):
+                for key, value in feature_dict.items():
+                    if feature in key:
+                        filtered_data.append(property_listing)
+
+        return render_template('features.html', title=feature_name, filtered_data=filtered_data)
 
     elif feature_name == 'building-age':
         feature = 'New Building'

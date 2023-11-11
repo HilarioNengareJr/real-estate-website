@@ -17,7 +17,7 @@ def estate_scraper(url):
     options.add_argument("start-maximized")
     options.add_argument("--disable-blink-features=AutomationControlled")
 
-    driver = uc.Chrome(ChromeDriverManager().install(), options=options)
+    driver = uc.Chrome(options=options)
 
     stealth(driver,
         languages=["en-US", "en"],
