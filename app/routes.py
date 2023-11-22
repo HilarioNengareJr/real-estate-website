@@ -364,6 +364,7 @@ def about():
 @login_required
 def account() -> str:
     '''Render the account page'''
+    
     return render_template('account.html')
 
 

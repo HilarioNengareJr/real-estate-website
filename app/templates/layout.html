@@ -184,11 +184,15 @@
 
                 <div class="header-bottom-actions">
 
-                    <button class="header-bottom-actions-btn" id="filter-btn" title="Filter" aria-label="Search"
+                    <button class="header-bottom-actions-btn" id="filter-btn" title="Filter" aria-label="Filter"
                         onclick="toggleInflate(this)">
                         <ion-icon name="funnel-outline"></ion-icon>
                     </button>
+
                     {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('account') }}" class="header-bottom-actions-btn" title="My Profile">
+                        <ion-icon name="settings-outline"></ion-icon>
+                    </a>
                     <a href="{{ url_for('logout') }}" class="btn">Logout</a>
                     {% else %}
                     <a href="{{ url_for('register') }}" title="Become Registered" class="header-bottom-actions-btn"
